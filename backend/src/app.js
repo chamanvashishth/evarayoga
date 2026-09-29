@@ -10,6 +10,7 @@ import contact from './routes/contact.js';
 import bookings from './routes/bookings.js';
 import admin from './routes/admin.js';
 import config from './routes/config.js';
+import auth from './routes/auth.js';
 import {errorHandler,notFoundHandler} from './middleware/errorHandler.js';
 
 export const app=express();
@@ -36,5 +37,6 @@ app.use('/api/contact',contact);
 app.use('/api/bookings',bookings);
 app.use('/api/admin',admin);
 app.use('/api/config',config);
+app.use('/api/auth',auth);
 app.use(notFoundHandler);
 app.use(errorHandler);

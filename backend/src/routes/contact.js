@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import {supabaseAdmin} from '../services/supabase.js';
+import {recordContactMessage,isGoogleSheetsConfigured} from '../services/googleSheets.js';
 
 const router=Router();
 const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,6 +27,21 @@ router.post('/',async(req,res,next)=>{
       .single();
 
     if(error) throw error;
+    if(data&&isGoogleSheetsConfigured()){
+      try{
+        await recordContactMessage({
+          id:data.id,
+          name,
+          email,
+          phone,
+          message,
+          status:'unread',
+          createdAt:data.created_at
+        });
+      }catch(sheetError){
+        console.error('Google Sheets contact logging failed:',sheetError.message);
+      }
+    }
     res.status(201).json({message:'Message received',data});
   }catch(error){next(error);}
 });

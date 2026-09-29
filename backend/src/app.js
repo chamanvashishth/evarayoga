@@ -17,10 +17,17 @@ export const app=express();
 
 if(env.nodeEnv==='production') app.set('trust proxy',1);
 
+function reqHost(req){return req.get('x-forwarded-host')||req.get('host');}
+function reqProto(req){return req.get('x-forwarded-proto')||req.protocol;}
+
 app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));
 app.use(cors({
   origin(origin,callback){
     if(!origin||env.corsOrigins.includes(origin)) return callback(null,true);
+    const forwardedHost=reqHost();
+    const forwardedProto=reqProto();
+    const sameOrigin=forwardedHost&&forwardedProto&&origin===forwardedProto+'://'+forwardedHost;
+    if(sameOrigin) return callback(null,true);
     return callback(new Error('Origin not allowed by CORS'));
   },
   methods:['GET','POST','PATCH','OPTIONS'],

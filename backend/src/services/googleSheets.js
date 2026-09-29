@@ -2,6 +2,7 @@ import {google} from 'googleapis';
 import {env} from '../config/env.js';
 
 const configured=Boolean(env.googleSheetsSpreadsheetId&&env.googleServiceAccountEmail&&env.googleServiceAccountPrivateKey);
+const headers=['Client ID','Name','Email','Phone','Signup Date','Last Login','Status'];
 
 function getSheets(){
   if(!configured) return null;
@@ -15,11 +16,27 @@ function getSheets(){
   return google.sheets({version:'v4',auth});
 }
 
+async function ensureHeader(sheets){
+  const result=await sheets.spreadsheets.values.get({
+    spreadsheetId:env.googleSheetsSpreadsheetId,
+    range:`${env.googleSheetsSheetName}!A1:G1`
+  });
+  const current=result.data.values?.[0]||[];
+  if(current.length===headers.length&&headers.every((value,index)=>current[index]===value)) return;
+  await sheets.spreadsheets.values.update({
+    spreadsheetId:env.googleSheetsSpreadsheetId,
+    range:`${env.googleSheetsSheetName}!A1:G1`,
+    valueInputOption:'RAW',
+    requestBody:{values:[headers]}
+  });
+}
+
 export function isGoogleSheetsConfigured(){return configured;}
 
 export async function recordClientSignup({id,name,email,phone,createdAt}){
   const sheets=getSheets();
   if(!sheets) return;
+  await ensureHeader(sheets);
   await sheets.spreadsheets.values.append({
     spreadsheetId:env.googleSheetsSpreadsheetId,
     range:`${env.googleSheetsSheetName}!A:G`,
@@ -32,6 +49,7 @@ export async function recordClientSignup({id,name,email,phone,createdAt}){
 export async function recordClientLogin({email,lastLogin}){
   const sheets=getSheets();
   if(!sheets) return;
+  await ensureHeader(sheets);
   const result=await sheets.spreadsheets.values.get({
     spreadsheetId:env.googleSheetsSpreadsheetId,
     range:`${env.googleSheetsSheetName}!A:G`

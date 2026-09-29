@@ -9,6 +9,7 @@ import testimonials from './routes/testimonials.js';
 import contact from './routes/contact.js';
 import bookings from './routes/bookings.js';
 import admin from './routes/admin.js';
+import config from './routes/config.js';
 import {errorHandler,notFoundHandler} from './middleware/errorHandler.js';
 
 export const app=express();
@@ -34,5 +35,6 @@ app.use('/api/testimonials',testimonials);
 app.use('/api/contact',contact);
 app.use('/api/bookings',bookings);
 app.use('/api/admin',admin);
+app.use('/api/config',config);
 app.use(notFoundHandler);
 app.use(errorHandler);

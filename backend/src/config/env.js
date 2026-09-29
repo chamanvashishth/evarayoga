@@ -27,6 +27,8 @@ export const env={
   whatsappUrl,
   googleSheetsSpreadsheetId:process.env.GOOGLE_SHEETS_SPREADSHEET_ID||'',
   googleSheetsSheetName:process.env.GOOGLE_SHEETS_SHEET_NAME||'Clients',
+  googleSheetsBookingsSheetName:process.env.GOOGLE_SHEETS_BOOKINGS_SHEET_NAME||'Bookings',
+  googleSheetsContactsSheetName:process.env.GOOGLE_SHEETS_CONTACTS_SHEET_NAME||'Contacts',
   googleServiceAccountEmail:process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL||'',
   googleServiceAccountPrivateKey:process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY||'',
   supabaseUrl:process.env.SUPABASE_URL,

@@ -25,6 +25,10 @@ export const env={
   nodeEnv,
   corsOrigins,
   whatsappUrl,
+  googleSheetsSpreadsheetId:process.env.GOOGLE_SHEETS_SPREADSHEET_ID||'',
+  googleSheetsSheetName:process.env.GOOGLE_SHEETS_SHEET_NAME||'Clients',
+  googleServiceAccountEmail:process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL||'',
+  googleServiceAccountPrivateKey:process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY||'',
   supabaseUrl:process.env.SUPABASE_URL,
   supabaseAnonKey:process.env.SUPABASE_ANON_KEY,
   supabaseServiceRoleKey:process.env.SUPABASE_SERVICE_ROLE_KEY

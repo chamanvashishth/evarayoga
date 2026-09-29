@@ -40,5 +40,14 @@
 <section class="contact"><div class="contact-inner"><div><div class="eyebrow">CONTACT US</div><h2>Let's start your <em style="color:var(--pink);font-style:italic">practice.</em></h2><p style="color:var(--muted);font-size:13px;margin-top:15px">Tell us whether you want Personal or Group Yoga and we'll help with the next available session.<br><br><b>Call / WhatsApp:</b> +91 91051 44413<br><b>Email:</b> evarayoga05@gmail.com</p></div><form class="form" onsubmit="event.preventDefault();alert('Thank you! Evara Yoga will contact you shortly.');this.reset()"><input required placeholder="Your Name"><input required placeholder="Phone / WhatsApp"><select><option>Personal Yoga Class</option><option>Group Yoga Class</option></select><textarea placeholder="Your message"></textarea><button class="btn primary">Send Enquiry →</button></form></div></section>
 
 <footer class="footer"><div class="footer-grid"><div><a class="brand" href="index.html"><img src="evara-logo.jpg"><span><b style="color:white">EVARA YOGA</b><small>FLOW · HEAL · BLOOM WITHIN</small></span></a><p>Personal & Group Yoga Classes · Online</p></div><div><b style="font-size:10px">EXPLORE</b><a href="about.html">About Us</a><a href="classes.html">Classes</a><a href="benefits.html">Benefits</a></div><div><b style="font-size:10px">INSTRUCTORS</b><a href="#instructors">Meet Our Instructors</a><a href="booking.html">Book a Class</a></div><div><b style="font-size:10px">CONNECT</b><a href="contact.html">Contact</a><a href="#">Instagram</a><a href="#">WhatsApp</a></div></div><div class="copy">© 2026 Evara Yoga. All rights reserved.</div></footer>
-<a class="wa" href="https://wa.me/919105144413" target="_blank">WA</a>
+<a class="wa" id="whatsappLink" href="#" target="_blank" rel="noopener noreferrer">WA</a>
+<script>
+fetch('/api/config/contact')
+  .then(response=>response.ok?response.json():Promise.reject(new Error('Unable to load contact config')))
+  .then(config=>{
+    const link=document.getElementById('whatsappLink');
+    if(link&&config.whatsappUrl) link.href=config.whatsappUrl;
+  })
+  .catch(()=>{});
+</script>
 </body></html>

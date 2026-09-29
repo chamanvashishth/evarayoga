@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import {supabaseAdmin} from '../services/supabase.js';
+import {recordBooking,isGoogleSheetsConfigured} from '../services/googleSheets.js';
 
 const router=Router();
 
@@ -51,7 +52,25 @@ router.post('/',async(req,res,next)=>{
       throw error;
     }
 
-    res.status(201).json({message:'Booking request received',data:data?.[0]??data});
+    const booking=Array.isArray(data)?data[0]:data;
+    if(booking&&isGoogleSheetsConfigured()){
+      try{
+        await recordBooking({
+          id:booking.id,
+          scheduleId:schedule_id,
+          customerName:customer_name,
+          email,
+          phone,
+          notes,
+          status:booking.status,
+          createdAt:booking.created_at
+        });
+      }catch(sheetError){
+        console.error('Google Sheets booking logging failed:',sheetError.message);
+      }
+    }
+
+    res.status(201).json({message:'Booking request received',data:booking});
   }catch(error){next(error);}
 });
 

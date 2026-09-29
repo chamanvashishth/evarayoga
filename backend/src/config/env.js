@@ -18,10 +18,13 @@ if(nodeEnv==='production'&&corsOrigins.includes('*')){
   throw new Error('CORS_ORIGIN cannot be * in production');
 }
 
+const whatsappUrl=process.env.WHATSAPP_URL||'https://wa.me/919105144413';
+
 export const env={
   port,
   nodeEnv,
   corsOrigins,
+  whatsappUrl,
   supabaseUrl:process.env.SUPABASE_URL,
   supabaseAnonKey:process.env.SUPABASE_ANON_KEY,
   supabaseServiceRoleKey:process.env.SUPABASE_SERVICE_ROLE_KEY

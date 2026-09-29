@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In — Evara Yoga</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap");
+:root{--pink:#e95b9c;--light:#fff2f8;--pale:#fff9fc;--ink:#34242d;--muted:#786b74;--line:#f0dbe6}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#fff9fc,#fbd8e8);color:var(--ink);font-family:DM Sans,sans-serif;display:grid;place-items:center;padding:30px}.wrap{width:min(440px,100%)}.brand{text-align:center;margin-bottom:25px}.brand img{width:68px;height:68px;border-radius:50%;object-fit:cover}.brand h1{font:500 36px "Playfair Display";margin:10px 0 3px}.brand p{margin:0;color:var(--muted);font-size:12px}.card{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:0 18px 50px #d14d8915}.card h2{font:500 28px "Playfair Display";margin:0 0 5px}.sub{font-size:12px;color:var(--muted);margin:0 0 22px}.field{margin-bottom:14px}.field label{display:block;font-size:11px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit;outline:none}.field input:focus{border-color:var(--pink)}button{width:100%;border:0;border-radius:24px;padding:13px;background:var(--pink);color:#fff;font-weight:700;cursor:pointer}.message{display:none;margin-top:14px;padding:11px;border-radius:10px;font-size:11px}.message.error{display:block;background:#fff0f2;color:#b32645}.message.success{display:block;background:var(--light);color:#8d3562}.foot{text-align:center;font-size:11px;color:var(--muted);margin-top:18px}.foot a{color:var(--pink);font-weight:700;text-decoration:none}.home{display:block;text-align:center;color:var(--muted);font-size:11px;margin-top:12px;text-decoration:none}
+</style></head>
+<body><main class="wrap"><div class="brand"><a href="index.html"><img src="evara-logo.jpg" alt="Evara Yoga"></a><h1>Evara Yoga</h1><p>FLOW · HEAL · BLOOM WITHIN</p></div><section class="card"><h2>Welcome back</h2><p class="sub">Sign in to continue with Evara Yoga.</p><form id="signinForm"><div class="field"><label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="email"></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" required autocomplete="current-password"></div><button type="submit">Sign In</button><div id="message" class="message"></div></form><div class="foot">New to Evara Yoga? <a href="signup.html">Create an account</a></div><a class="home" href="index.html">← Back to Evara Yoga</a></section></main>
+<script type="module">
+import {api,saveSession} from './js/api.js';
+const form=document.getElementById('signinForm'),message=document.getElementById('message');
+form.addEventListener('submit',async event=>{
+  event.preventDefault(); message.className='message';
+  try{
+    const result=await api('/auth/signin',{method:'POST',body:JSON.stringify({email:form.email.value,password:form.password.value})});
+    saveSession(result.session); message.className='message success'; message.textContent='Signed in successfully.';
+    setTimeout(()=>{location.href='index.html'},500);
+  }catch(error){message.className='message error';message.textContent=error.message}
+});
+</script></body></html>

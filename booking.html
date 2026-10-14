@@ -3,61 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Book a Session | Evara Yoga</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
-<style>
-:root{--pink:#e85c9b;--purple:#6b367b;--deep:#3b2149;--cream:#fff8fc;--line:#efdce7;--muted:#756976}*{box-sizing:border-box}body{margin:0;font-family:"DM Sans",sans-serif;background:linear-gradient(135deg,#fff7fb,#f7e7f0);color:#2d2030}.nav{padding:20px 7%;display:flex;justify-content:space-between;align-items:center}.brand{font:600 22px "Playfair Display";color:var(--purple);text-decoration:none}.nav a:last-child{color:var(--pink);text-decoration:none;font-weight:700}.wrap{max-width:1100px;margin:auto;padding:35px 22px 80px}.hero{text-align:center;max-width:700px;margin:20px auto 45px}.eyebrow{color:var(--pink);font-size:11px;font-weight:700;letter-spacing:2px}.hero h1{font:500 clamp(44px,7vw,76px)/1 "Playfair Display";color:var(--deep);margin:10px 0}.hero p{color:var(--muted);line-height:1.7}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:0 20px 50px #7b315f12}.card h2{font:500 30px "Playfair Display";color:var(--deep);margin-top:0}.slots{display:grid;gap:10px}.slot{padding:14px;border:1px solid var(--line);border-radius:12px;cursor:pointer}.slot:hover,.slot.selected{border-color:var(--pink);background:#fff2f8}.muted{color:var(--muted);font-size:14px}label{display:block;font-size:12px;font-weight:700;margin:14px 0 6px}input,textarea,button{font:inherit}input,textarea{width:100%;padding:13px;border:1px solid var(--line);border-radius:10px}textarea{min-height:90px;resize:vertical}button{margin-top:18px;width:100%;padding:14px;border:0;border-radius:28px;background:linear-gradient(100deg,var(--purple),var(--pink));color:white;font-weight:700;cursor:pointer}button:disabled{opacity:.6;cursor:not-allowed}.status{min-height:22px;margin-top:12px;font-size:13px}.error{color:#b42318}.success{color:#087443}@media(max-width:800px){.grid{grid-template-columns:1fr}.nav{padding:18px 22px}}
-</style>
+<meta http-equiv="refresh" content="0;url=/api/config/whatsapp">
+<title>Opening WhatsApp | Evara Yoga</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#fff8fc;color:#3b2149;font:16px Arial,sans-serif}main{text-align:center;padding:32px}a{color:#e85c9b}</style>
 </head>
 <body>
-<nav class="nav"><a class="brand" href="index.html">EVARA YOGA</a><a href="contact.html">Contact</a></nav>
-<main class="wrap">
-<section class="hero"><div class="eyebrow">BOOK YOUR PRACTICE</div><h1>Find a session that fits your rhythm.</h1><p>Choose an available class, then submit your details. Capacity is checked securely by the database before your booking is created.</p></section>
-<section class="grid">
-<div class="card"><h2>Available sessions</h2><div id="slots" class="slots"><p class="muted">Loading available sessions…</p></div></div>
-<div class="card"><h2>Your details</h2><p id="selected" class="muted">Select a session first.</p>
-<form id="bookingForm">
-<label>Name</label><input name="customer_name" maxlength="120" required>
-<label>Email</label><input name="email" type="email" maxlength="254" required>
-<label>Phone</label><input name="phone" maxlength="40">
-<label>Notes (optional)</label><textarea name="notes" maxlength="2000"></textarea>
-<button id="submit" disabled>Request booking</button>
-<div id="status" class="status" aria-live="polite"></div>
-</form></div>
-</section>
+<main>
+<p>Taking you to Evara Yoga on WhatsApp…</p>
+<p>If you are not redirected, <a href="/api/config/whatsapp">continue to WhatsApp</a>.</p>
 </main>
-<script type="module">
-import {api} from './js/api.js';
-const slots=document.querySelector('#slots'),selected=document.querySelector('#selected'),form=document.querySelector('#bookingForm'),button=document.querySelector('#submit'),status=document.querySelector('#status');
-let scheduleId=null;
-const fmt=new Intl.DateTimeFormat(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
-function setStatus(message,type=''){status.textContent=message;status.className='status '+type;}
-try{
- const {data}=await api('/bookings/schedules');
- if(!data?.length){slots.innerHTML='<p class="muted">No upcoming sessions are available right now.</p>';}
- else{
-  slots.innerHTML='';
-  data.forEach(s=>{
-   const el=document.createElement('button');el.type='button';el.className='slot';
-   const remaining=Math.max(0,s.capacity-s.booked_count);
-   el.innerHTML='<strong>'+String(s.classes?.title||'Yoga Session')+'</strong><br><span class="muted">'+fmt.format(new Date(s.starts_at))+' · '+remaining+' spots left</span>';
-   el.onclick=()=>{document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');scheduleId=s.id;selected.textContent=(s.classes?.title||'Yoga Session')+' — '+fmt.format(new Date(s.starts_at));button.disabled=false;};
-   slots.appendChild(el);
-  });
- }
-}catch(error){slots.innerHTML='<p class="error">Unable to load sessions. Please try again later.</p>';}
-form.addEventListener('submit',async e=>{
- e.preventDefault();if(!scheduleId)return;
- button.disabled=true;setStatus('Submitting your booking…');
- const fd=new FormData(form);
- try{
-  const result=await api('/bookings',{method:'POST',body:JSON.stringify({schedule_id:scheduleId,customer_name:fd.get('customer_name'),email:fd.get('email'),phone:fd.get('phone'),notes:fd.get('notes')})});
-  form.reset();scheduleId=null;document.querySelectorAll('.slot').forEach(x=>x.classList.remove('selected'));selected.textContent='Select a session first.';setStatus(result.message||'Booking request received.','success');
- }catch(error){setStatus(error.message,'error');}
- finally{button.disabled=!scheduleId;}
-});
-</script>
+<script>window.location.replace('/api/config/whatsapp');</script>
 </body>
 </html>
